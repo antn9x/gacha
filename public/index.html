@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Gacha system!</title>
+        <link href="./css/game.css" rel="stylesheet" type="text/css">
+        <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="./css/bootstrap-lightbox.min.css" rel="stylesheet" type="text/css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+        var socket = io.connect('http://localhost:3000');
+        socket.on("loginSuccess",function(data){
+            console.log(data);
+        });
+        socket.on("finishDraw",function(data){
+            console.log(data);
+        });
+        socket.on("showItems",function(data){
+            console.log(JSON.stringify(data));
+        });
+            function login (type) {
+                // body...
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            socket.emit("onLogin", {email:email, password:password, type:type});
+            }
+            function nomal () {
+                socket.emit("onLogout", {email:email});
+            }
+            function nomal () {
+                // body...
+                socket.emit("onDraw",{type:0});
+                // alert("nomal");
+            }
+            function expensive () {
+                // body...
+                socket.emit("onDraw",{type:1});
+                // alert("expensive");
+            }
+            function box () {
+                // body...
+                socket.emit("onDraw",{type:2});
+                // alert("box");
+            }
+        </script>
+    </head>
+
+    <body>
+        <form>
+            Login
+            email: <input type="text" id="email"></input></br>
+            password: <input type="password" id="password"></input></br>
+            <input type="button" onClick="login(0);" value="Log in"></input>
+            <input type="button" onClick="login(1);" value="Register"></input></br>
+        </form>
+        <div class="info"> Coins: {{coins}} <a href="#" onClick="logout();">Log out</a></div>
+        <hr>
+        Gacha:<br/><br/>
+        <input type="button" value="Nomal Gacha" onClick="nomal();"/>
+        <input type="button" value="Expensive Gacha" onClick="expensive();"/>
+        <input type="button" value="Box Gacha" onClick="box();"/>
+        <HR>
+            Items:
+
+    </body>
+
+</html>
