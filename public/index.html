@@ -5,58 +5,12 @@
         <title>Gacha system!</title>
         <link href="./css/bootstrap.min.css" rel="stylesheet" type="text/css">
         <link href="./css/bootstrap-lightbox.min.css" rel="stylesheet" type="text/css">
+        <link href="./css/gacha.css" rel="stylesheet" type="text/css">
         <script src="./js/angular.min.js"></script>
         <script src="./js/angular-route.min.js"></script>
         <script src="./js/ng-socket-io.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-
-        <script type="text/javascript">
-        var socket = io.connect('http://localhost:3000');
-        socket.on("loginSuccess",function(data){
-            console.log(data);
-        });
-        socket.on("finishDraw",function(data){
-            console.log(data);
-        });
-
-            function login (type) {
-                // body...
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            socket.emit("onLogin", {email:email, password:password, type:type});
-            }
-            function nomal () {
-                socket.emit("onLogout", {email:email});
-            }
-            function nomal () {
-                // body...
-                socket.emit("onDraw",{type:0});
-                // alert("nomal");
-            }
-            function expensive () {
-                // body...
-                socket.emit("onDraw",{type:1});
-                // alert("expensive");
-            }
-            function box () {
-                // body...
-                socket.emit("onDraw",{type:2});
-                // alert("box");
-            }
-        </script>
-         <style>
-            table, th , td {
-              border: 1px solid grey;
-              border-collapse: collapse;
-              padding: 5px;
-            }
-            table tr:nth-child(odd) {
-              background-color: #f1f1f1;
-            }
-            table tr:nth-child(even) {
-              background-color: #ffffff;
-            }
-            </style> 
+        <script src="./js/gacha.js"></script>
     </head>
 
     <body>
@@ -85,15 +39,6 @@
             </table>
 
             </div>
-            <script type="text/javascript">
-            var app = angular.module('myApp', ['ngRoute', 'socket-io']);
-            app.controller('customersCtrl', function ($scope, socket) {
-                socket.on("showItems", function (data){
-                    console.log(JSON.stringify(data));
-                    $scope.names = data;
-                });
-            });
-            </script>
     </body>
 
 </html>
