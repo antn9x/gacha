@@ -21,7 +21,7 @@ var Singleton = (function () {
                     instance.run("CREATE TABLE users (email varchar(50) primary key,password varchar(20),coins int,created_at int,updated_at int)");
                     instance.run("CREATE TABLE items(i_id int primary key,i_name varchar(50),rare smallint)");
                     instance.run("CREATE TABLE user_item(email varchar(50),i_id int,quantity int)");
-                    instance.run("CREATE TABLE gacha_probability (g_id int,rare smallint primary key(g_id, rare),probability int)");
+                    instance.run("CREATE TABLE gacha_probability (g_id int,rare smallint ,probability int, primary key(g_id, rare))");
 
                  var stmt = instance.prepare("INSERT INTO users VALUES (?,?,?,?,?)");
                  var current  = new Date().getTime()/1000 >> 0;//second
