@@ -23,7 +23,7 @@ var Singleton = (function () {
                     instance.run("CREATE TABLE user_item(email varchar(50),i_id int,quantity int)");
                     instance.run("CREATE TABLE gacha_probability (g_id int,rare smallint primary key(g_id, rare),probability int)");
 
-                 var stmt = instance.prepare("INSERT INTO users VALUES (?,?,?)");
+                 var stmt = instance.prepare("INSERT INTO users VALUES (?,?,?,?,?)");
                  var current  = new Date().getTime()/1000 >> 0;//second
                  stmt.run("admin","admin",5000, current,current);
                  stmt.finalize();

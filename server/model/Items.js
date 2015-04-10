@@ -13,7 +13,7 @@ var Items = Backbone.Model.extend({
 				callback(null, SQLiteSingleton);
 			},
 			function (db, callback){
-				db.all("SELECT * FROM items WHERE rare=?", type, callback);
+				db.all("SELECT * FROM items WHERE rare=?", type+1, callback);
 			}
 		],cb);
 	},

@@ -13,15 +13,34 @@
         <script src="./js/gacha.js"></script>
     </head>
 
-    <body>
-        <form>
-            Login
-            email: <input type="text" id="email"></input></br>
-            password: <input type="password" id="password"></input></br>
-            <input type="button" onClick="login(0);" value="Log in"></input>
-            <input type="button" onClick="login(1);" value="Register"></input></br>
+    <body ng-app="myApp" ng-controller="customersCtrl">
+        <form ng-hide="logedin">
+            Login / Signup <br/>
+            <table>
+              <tr >
+                <td>Email</td>
+                <td><input type="text" id="email" value="admin"></input></td>
+              </tr>
+              <tr >
+                <td>Password</td>
+                <td><input type="password" id="password" value="admin"></input></td>
+              </tr>
+              <tr >
+                <td>
+                    <button class="btn btn-success" onClick="login(0);">
+                        <span class="glyphicon"></span> Log in
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-success" ng-click="editUser('new')" onClick="login(1);">
+                        <span class="glyphicon glyphicon-user"></span> Create New User
+                    </button>
+                </td>
+              </tr>
+            </table>
+            
         </form>
-        <div class="info"> Coins: {{coins}} <a href="#" onClick="logout();">Log out</a></div>
+        <div class="info" ng-show="logedin">User: {{user}} Coins: {{coins}} <a href="#" onClick="logout();">Log out</a></div>
         <hr>
         Gacha home:<br/><br/>
         <input type="button" value="Nomal Gacha" onClick="nomal();"/>
@@ -29,12 +48,12 @@
         <input type="button" value="Box Gacha" onClick="box();"/>
         <HR>
             Inventory:<br/>
-            <div ng-app="myApp" ng-controller="customersCtrl">
+            <div >
 
             <table>
               <tr ng-repeat="x in names">
-                <td>{{ x.i_id }}</td>
                 <td>{{ x.i_name }}</td>
+                <td>{{ x.i_id }}</td>
               </tr>
             </table>
 

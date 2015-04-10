@@ -1,6 +1,6 @@
 var Backbone        = require('backbone');
 var async           = require('async');
-var GachaServices    = require('./GachaServices').GachaServices;
+var GachaServices   = require('./GachaServices').GachaServices;
 
 var GachaServer  = Backbone.Model.extend({
     _server : null,
@@ -15,6 +15,7 @@ var GachaServer  = Backbone.Model.extend({
         client.on("disconnect", _server.onClientDisconnect);
         //business
         client.on("onLogin",_server.onLogin);
+        client.on("onLogout",_server.onLogout);
         client.on("onDraw", _server.onDraw);
     },
     onClientDisconnect: function() {
@@ -23,14 +24,25 @@ var GachaServer  = Backbone.Model.extend({
     onLogin: function (data) {
         console.log(data);
         var _sefl = this;
-        _sefl.emit("loginSuccess", {success:1});
+        GachaServices.checkLogin(data, function (err, res) {
+            if (err) {console.log(err)};
+            res.logedin = true;
+            _sefl.emit("loginSuccess", res);
+            if(res) {
+                _sefl.emit("showItems", res.items);
+            }
+        });
+    },
+    onLogout: function (data) {
+        console.log(data);
+        var _sefl = this;
+            _sefl.emit("loginSuccess", {logedin:false});
     },
     onDraw: function (data) {
         console.log(data);
         var _sefl = this;
-        _sefl.emit("finishDraw", {items:[]});
         GachaServices.getItemsByType(data.type, function (err, items) {
-            _sefl.emit("showItems", items);
+            _sefl.emit("finishDraw", items);
         });
     }
 });
