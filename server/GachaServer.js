@@ -41,8 +41,8 @@ var GachaServer  = Backbone.Model.extend({
     onDraw: function (data) {
         console.log(data);
         var _sefl = this;
-        GachaServices.getItemsByType(data.type, function (err, items) {
-            _sefl.emit("finishDraw", items);
+        GachaServices.drawGacha(data.type, function (err, items) {
+            _sefl.emit("showItems", items);
         });
     }
 });

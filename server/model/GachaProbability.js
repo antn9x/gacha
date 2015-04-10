@@ -13,7 +13,7 @@ var GachaProbability = Backbone.Model.extend({
 				callback(null, SQLiteSingleton);
 			},
 			function (db, callback){
-				db.all("SELECT * FROM gacha_probability WHERE g_id=?", type callback);
+				db.all("SELECT * FROM gacha_probability WHERE g_id=?", type, callback);
 			}
 		],cb);
 	},

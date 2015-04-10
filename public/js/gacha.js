@@ -1,9 +1,5 @@
 var socket = io.connect('http://localhost:3000');
 
-socket.on("finishDraw",function(data){
-    console.log(data);
-});
-
 function login (type) {
     // body...
     var email = document.getElementById("email").value;
@@ -13,20 +9,8 @@ function login (type) {
 function logout () {
     socket.emit("onLogout", {email:email});
 }
-function nomal () {
-    // body...
-    socket.emit("onDraw",{type:0});
-    // alert("nomal");
-}
-function expensive () {
-    // body...
-    socket.emit("onDraw",{type:1});
-    // alert("expensive");
-}
-function box () {
-    // body...
-    socket.emit("onDraw",{type:2});
-    // alert("box");
+function draw (type) {
+    socket.emit("onDraw",{type:type});
 }
 
 var app = angular.module('myApp', ['ngRoute', 'socket-io']);

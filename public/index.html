@@ -43,9 +43,9 @@
         <div class="info" ng-show="logedin">User: {{user}} Coins: {{coins}} <a href="#" onClick="logout();">Log out</a></div>
         <hr>
         Gacha home:<br/><br/>
-        <input type="button" value="Nomal Gacha" onClick="nomal();"/>
-        <input type="button" value="Expensive Gacha" onClick="expensive();"/>
-        <input type="button" value="Box Gacha" onClick="box();"/>
+        <input type="button" value="Nomal Gacha" onClick="draw(0);"/>
+        <input type="button" value="Expensive Gacha" onClick="draw(1);"/>
+        <input type="button" value="Box Gacha" onClick="draw(2);"/>
         <HR>
             Inventory:<br/>
             <div >

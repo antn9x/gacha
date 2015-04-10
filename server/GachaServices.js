@@ -2,6 +2,8 @@ var Backbone        = require('backbone');
 var async           = require('async');
 var Items        	= require('./model/Items').Items;
 var Users        	= require('./model/Users').Users;
+var GachaProbability= require('./model/GachaProbability').GachaProbability;
+var UserItem		= require('./model/UserItem').UserItem;
 
 var GachaServices = Backbone.Model.extend({
     initialize : function () {
@@ -17,7 +19,22 @@ var GachaServices = Backbone.Model.extend({
 		else
 		Users.addNewUser(data, cb);
 	},
-	register : function (data, cb) {
+	drawGacha : function (type, cb) {
+		async.auto({
+			current: function (next) {
+				next();
+			},
+			gachaProbability: function (next) {
+				GachaProbability.getItemsByType(type, next);
+			},
+			items: function (next) {
+				Items.getItemsByType(type, next);
+			}
+		}, function (err, res) {
+			var items =[];
+			items = res.items;
+			cb(null, items)
+		});
 	}
 });
 

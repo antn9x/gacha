@@ -13,7 +13,7 @@ var UserItem = Backbone.Model.extend({
 				callback(null, SQLiteSingleton);
 			},
 			function (db, callback){
-				db.all("SELECT * FROM user_item WHERE email=?", email callback);
+				db.all("SELECT * FROM user_item WHERE email=?", email, callback);
 			}
 		],cb);
 	},
