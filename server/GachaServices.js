@@ -50,9 +50,7 @@ var GachaServices = Backbone.Model.extend({
 				Items.getItemsByIds(ids, next);
 			}],
 		}, function (err, res) {
-			// console.log(JSON.stringify(res.current));
-			// console.log("items: "+JSON.stringify(res.itemsInfo));
-			var items = this._getItemUserInfo(res.current, res.itemsInfo);
+			var items = _self._getItemUserInfo(res.current, res.itemsInfo);
 			cb(null, items);
 		});
 	},
@@ -106,7 +104,7 @@ var GachaServices = Backbone.Model.extend({
 				return i.i_id === c.i_id;
 			});
 			_.extend(c,itemInfo);
-			items.push(_.pick(c,'i_id','i_name','quantity'));
+			items.push(_.pick(c,'i_id','i_name', 'rare', 'quantity'));
 		});
 		return items;
 	}

@@ -12,13 +12,25 @@ function logout () {
 function draw (type) {
     socket.emit("onDraw",{type:type});
 }
-
+function convertRareToString (items) {
+    for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        switch (item.rare){
+            case 0: item.rare = "Common"; break;
+            case 1: item.rare = "UnCommon"; break;
+            case 2: item.rare = "Rare"; break;
+            case 3: item.rare = "Supper Rare"; break;
+            default: item.rare = "Common";
+        }
+    };
+    return items;
+}
 var app = angular.module('myApp', ['ngRoute', 'socket-io']);
 app.controller('customersCtrl', function ($scope, socket) {
     $scope.logedin = false;
     socket.on("showItems", function (data){
         console.log(JSON.stringify(data));
-        $scope.items = data;
+        $scope.items = convertRareToString(data);
     });
     socket.on("loginSuccess",function (data){
         console.log(data);
@@ -26,7 +38,7 @@ app.controller('customersCtrl', function ($scope, socket) {
             $scope.logedin = data.logedin;
             $scope.coins = data.coins;
             $scope.user = data.email;
-            $scope.items = data.items;
+            $scope.items = convertRareToString(data.items);
         }
 
     });
