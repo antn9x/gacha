@@ -51,9 +51,15 @@
             <div >
 
             <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Quantity</th>
+                </tr>
               <tr ng-repeat="x in names">
-                <td>{{ x.i_name }}</td>
                 <td>{{ x.i_id }}</td>
+                <td>{{ x.i_name }}</td>
+                <td>{{ x.quantity }}</td>
               </tr>
             </table>
 

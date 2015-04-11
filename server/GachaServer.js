@@ -8,6 +8,7 @@ var GachaServer  = Backbone.Model.extend({
     initialize : function () {
         // body...
         _server = this;
+        _email = "";
     },
     onSocketConnection : function (client) {
         console.log("New player has connected: " + client.id);
@@ -27,6 +28,7 @@ var GachaServer  = Backbone.Model.extend({
         GachaServices.checkLogin(data, function (err, res) {
             if (err) {console.log(err)};
             res.logedin = true;
+            _email = data.email;
             _sefl.emit("loginSuccess", res);
             if(res) {
                 _sefl.emit("showItems", res.items);
@@ -39,9 +41,9 @@ var GachaServer  = Backbone.Model.extend({
             _sefl.emit("loginSuccess", {logedin:false});
     },
     onDraw: function (data) {
-        console.log(data);
+        console.log("CLIENT DRAW: "+JSON.stringify(data));
         var _sefl = this;
-        GachaServices.drawGacha(data.type, function (err, items) {
+        GachaServices.drawGacha(_email, data.type, function (err, items) {
             _sefl.emit("showItems", items);
         });
     }

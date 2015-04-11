@@ -1,1 +1,2 @@
 # gacha
+# Run: setup.sh
