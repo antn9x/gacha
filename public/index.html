@@ -40,30 +40,30 @@
             </table>
             
         </form>
-        <div class="info" ng-show="logedin">User: {{user}} Coins: {{coins}} <a href="#" onClick="logout();">Log out</a></div>
+        <div class="info" ng-show="logedin">
+            User: {{user}} Coins: {{coins}} <a href="#" onClick="logout();">Log out</a>
         <hr>
         Gacha home:<br/><br/>
         <input type="button" value="Nomal Gacha" onClick="draw(0);"/>
         <input type="button" value="Expensive Gacha" onClick="draw(1);"/>
         <input type="button" value="Box Gacha" onClick="draw(2);"/>
         <HR>
-            Inventory:<br/>
+        Inventory:<br/>
             <div >
-
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                </tr>
-              <tr ng-repeat="x in names">
-                <td>{{ x.i_id }}</td>
-                <td>{{ x.i_name }}</td>
-                <td>{{ x.quantity }}</td>
-              </tr>
-            </table>
-
+                <table ng-show="items">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                  <tr ng-repeat="x in items">
+                    <td>{{ x.i_id }}</td>
+                    <td>{{ x.i_name }}</td>
+                    <td>{{ x.quantity }}</td>
+                  </tr>
+                </table>
             </div>
+        </div>
     </body>
 
 </html>

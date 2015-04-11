@@ -15,8 +15,9 @@ var GachaServices = Backbone.Model.extend({
 		Items.getItemsByType(type, cb);
 	},
 	checkLogin : function (data, cb) {
-		if(data.type == 0)
-		Users.checkLogin(data, cb);
+		if(data.type == 0){
+			this._checkLogIn(data,cb);
+		}
 		else
 		Users.addNewUser(data, cb);
 	},
@@ -51,14 +52,7 @@ var GachaServices = Backbone.Model.extend({
 		}, function (err, res) {
 			// console.log(JSON.stringify(res.current));
 			// console.log("items: "+JSON.stringify(res.itemsInfo));
-			var items = [];
-			_.each(res.current, function (c){
-				var itemInfo = _.find(res.itemsInfo, function (i){
-					return i.i_id === c.i_id;
-				});
-				_.extend(c,itemInfo);
-				items.push(_.pick(c,'i_id','i_name','quantity'));
-			});
+			var items = this._getItemUserInfo(res.current, res.itemsInfo);
 			cb(null, items);
 		});
 	},
@@ -80,6 +74,41 @@ var GachaServices = Backbone.Model.extend({
             startIndex += rand_list[i];
         };
         return gachaProbability[stop_index].rare;
+	},
+	_checkLogIn: function (data, cb) {
+		var _self = this;
+		async.auto({
+			user: function (next) {
+				Users.checkLogin(data, next);
+			},
+			items: ['user', function (next, res) {
+				var user = res.user;
+				UserItem.getItemsByEmail(user.email, next);
+			}],
+			itemsInfo: ['items', function (next, res) {
+				var ids = _.pluck(res.items, "i_id");
+				Items.getItemsByIds(ids, next);
+			}],
+		}, function (err, res) {
+			var ret = res.user ? {
+				email: res.user.email,
+				coins: res.user.coins,
+				logedin: true,
+				items: _self._getItemUserInfo(res.items, res.itemsInfo)
+			} : {logedin: false};
+			cb(null, ret);
+		});
+	},
+	_getItemUserInfo: function (current, itemsInfo) {
+		var items = [];
+		_.each(current, function (c){
+			var itemInfo = _.find(itemsInfo, function (i){
+				return i.i_id === c.i_id;
+			});
+			_.extend(c,itemInfo);
+			items.push(_.pick(c,'i_id','i_name','quantity'));
+		});
+		return items;
 	}
 });
 

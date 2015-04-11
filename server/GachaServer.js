@@ -27,22 +27,24 @@ var GachaServer  = Backbone.Model.extend({
         var _sefl = this;
         GachaServices.checkLogin(data, function (err, res) {
             if (err) {console.log(err)};
-            res.logedin = true;
             _email = data.email;
             _sefl.emit("loginSuccess", res);
-            if(res) {
-                _sefl.emit("showItems", res.items);
-            }
         });
     },
     onLogout: function (data) {
         console.log(data);
+        _email = "";
         var _sefl = this;
             _sefl.emit("loginSuccess", {logedin:false});
     },
     onDraw: function (data) {
-        console.log("CLIENT DRAW: "+JSON.stringify(data));
         var _sefl = this;
+        if(""==_email){
+            _sefl.emit("loginSuccess", {logedin:false, message:"Please loged in before draw!"});
+            _sefl.emit("showItems", {});
+            return;
+        }
+        console.log("CLIENT DRAW: "+JSON.stringify(data));
         GachaServices.drawGacha(_email, data.type, function (err, items) {
             _sefl.emit("showItems", items);
         });

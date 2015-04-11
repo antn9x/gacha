@@ -18,7 +18,7 @@ app.controller('customersCtrl', function ($scope, socket) {
     $scope.logedin = false;
     socket.on("showItems", function (data){
         console.log(JSON.stringify(data));
-        $scope.names = data;
+        $scope.items = data;
     });
     socket.on("loginSuccess",function (data){
         console.log(data);
@@ -26,6 +26,7 @@ app.controller('customersCtrl', function ($scope, socket) {
             $scope.logedin = data.logedin;
             $scope.coins = data.coins;
             $scope.user = data.email;
+            $scope.items = data.items;
         }
 
     });
