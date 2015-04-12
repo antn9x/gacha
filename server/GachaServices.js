@@ -9,7 +9,6 @@ var UserItem		= require('./model/UserItem').UserItem;
 var GachaServices = Backbone.Model.extend({
     initialize : function () {
         // body...
-		console.log("gache");
     },
 	getItemsByType : function (type, cb) {
 		Items.getItemsByType(type, cb);
@@ -23,14 +22,15 @@ var GachaServices = Backbone.Model.extend({
 	},
 	drawGacha : function (email, type, cb) {
 		var _self = this;
+		var newMoney;
 		async.auto({
-			user: function (next) {
-				Users.getUserByEmail({email:email}, next);
+			updateCoins: function (next) {
+				Users.updateCoins({email:email}, next);
 			},
-			spendMoney: ['user', function (next, res) {
-				var user = res.user;
+			spendMoney: ['updateCoins', function (next, res) {
+				var coins = res.updateCoins;
 				var consumption = (type == 0) ? 100 : ((type ==1)? 1000: 500);
-				var newMoney = user.coins - consumption;
+				newMoney = coins - consumption;
 				console.log(newMoney);
 				if(newMoney<0){
 					cb(new Error("Do not enough money"));
@@ -64,9 +64,10 @@ var GachaServices = Backbone.Model.extend({
 				Items.getItemsByIds(ids, next);
 			}],
 		}, function (err, res) {
-			console.log(JSON.stringify(res.itemsInfo));
+			// console.log(JSON.stringify(res.itemsInfo));
 			var items = _self._getItemUserInfo(res.current, res.itemsInfo);
-			cb(null, items);
+			var ret = {items:items, user:{coins:newMoney}};
+			cb(null, ret);
 		});
 	},
 	_getRandomItemRare: function (gachaProbability) {
@@ -102,10 +103,14 @@ var GachaServices = Backbone.Model.extend({
 				var ids = _.pluck(res.items, "i_id");
 				Items.getItemsByIds(ids, next);
 			}],
+			updateCoins: function (next) {
+				Users.updateCoins(data, next);
+			}
 		}, function (err, res) {
+			console.log(res.updateCoins);
 			var ret = res.user ? {
 				email: res.user.email,
-				coins: res.user.coins,
+				coins: res.updateCoins,
 				logedin: true,
 				items: _self._getItemUserInfo(res.items, res.itemsInfo)
 			} : {logedin: false};

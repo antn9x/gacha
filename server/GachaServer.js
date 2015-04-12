@@ -45,8 +45,9 @@ var GachaServer  = Backbone.Model.extend({
             return;
         }
         console.log("CLIENT DRAW: "+JSON.stringify(data));
-        GachaServices.drawGacha(_email, data.type, function (err, items) {
-            _sefl.emit("showItems", items);
+        GachaServices.drawGacha(_email, data.type, function (err, res) {
+            _sefl.emit("showItems", res.items);
+            _sefl.emit("updateUserInfo", res.user);
         });
     }
 });

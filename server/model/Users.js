@@ -49,6 +49,26 @@ var Users = Backbone.Model.extend({
 			}
 		],cb);
 	},
+	updateCoins: function (data, cb) {
+		var db, newCoins;
+		async.waterfall ([
+			function (callback) {
+				callback(null, SQLiteSingleton);
+			},
+			function (_res, callback) {
+				db = _res;
+				db.get("SELECT * FROM users WHERE email=?", [data.email], callback);
+			},
+			function (user, callback){
+				var current  = new Date().getTime()/1000 >> 0;//second
+				var elapsedTime = current - user.updated_at;
+				newCoins = user.coins + elapsedTime * 1;
+				db.run("UPDATE users SET coins =?, updated_at=? WHERE email=?", [newCoins, current, data.email], callback);
+			}
+		],function (err, res) {
+			cb (err, newCoins);
+		});
+	},
 });
 
 exports.Users = new Users();

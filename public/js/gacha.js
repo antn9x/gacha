@@ -13,6 +13,7 @@ function draw (type) {
     socket.emit("onDraw",{type:type});
 }
 function convertRareToString (items) {
+    if (!items) return {};
     for (var i = 0; i < items.length; i++) {
         var item = items[i];
         switch (item.rare){
@@ -26,7 +27,8 @@ function convertRareToString (items) {
     return items;
 }
 var app = angular.module('myApp', ['ngRoute', 'socket-io']);
-app.controller('customersCtrl', function ($scope, socket) {
+app.controller('gachaControl', function ($scope, socket, $interval) {
+    var stop;
     $scope.logedin = false;
     socket.on("showItems", function (data){
         console.log(JSON.stringify(data));
@@ -39,7 +41,17 @@ app.controller('customersCtrl', function ($scope, socket) {
             $scope.coins = data.coins;
             $scope.user = data.email;
             $scope.items = convertRareToString(data.items);
+            if (data.logedin) {
+                stop = $interval (function() {
+                  $scope.coins++;
+                }, 1000);
+            } else {
+                $interval.cancel(stop);
+                stop = undefined;
+            }
         }
-
+    });
+    socket.on("updateUserInfo",function (data) {
+        $scope.coins = data.coins;
     });
 });
