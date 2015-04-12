@@ -30,7 +30,7 @@ var UserItem = Backbone.Model.extend({
 				_self.getItemsByEmail(email, next);
 			},
 			function (userItems, callback) {
-				var found = _.find(userItems, function(ui){return ui.i_id==item.i_id;});
+				var found = _.find(userItems, function (ui){return ui.i_id==item.i_id;});
 				console.log(JSON.stringify(found));
 				if(found){
 					db.run("UPDATE user_item SET quantity = ? WHERE email=? AND i_id=?", [found.quantity +1 , email, item.i_id], callback);

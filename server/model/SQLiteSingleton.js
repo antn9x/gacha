@@ -16,6 +16,7 @@ var Singleton = (function () {
               try{
                 var sqlite3 = require("sqlite3").verbose();
                 instance = new sqlite3.Database(file);
+                instance.on('trace', function(querry){console.log(querry);});
                 instance.serialize(function() {
                   if(!exists) {
                     instance.run("CREATE TABLE users (email varchar(50) primary key,password varchar(20),coins int,created_at int,updated_at int)");

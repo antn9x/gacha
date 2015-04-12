@@ -13,7 +13,17 @@ var Users = Backbone.Model.extend({
 				callback(null, SQLiteSingleton);
 			},
 			function (db, callback){
-				db.get("SELECT * FROM users WHERE email=?", data.email, callback);
+				db.get("SELECT * FROM users WHERE email=? AND password=?", [data.email, data.password], callback);
+			}
+		],cb);
+	},
+	getUserByEmail: function (data, cb){
+		async.waterfall ([
+			function (callback) {
+				callback(null, SQLiteSingleton);
+			},
+			function (db, callback) {
+				db.get("SELECT * FROM users WHERE email=?", [data.email], callback);
 			}
 		],cb);
 	},
@@ -25,6 +35,17 @@ var Users = Backbone.Model.extend({
 			function (db, callback){
 				var current  = new Date().getTime()/1000 >> 0;//second
 				db.run("INSERT INTO users VALUES (?,?,?,?,?)", [data.email, data.password, 5000, current, current], callback);
+			}
+		],cb);
+	},
+	spendMoney: function (data, cb) {
+		async.waterfall ([
+			function (callback){
+				callback(null, SQLiteSingleton);
+			},
+			function (db, callback){
+				var current  = new Date().getTime()/1000 >> 0;//second
+				db.run("UPDATE users SET coins =? WHERE email=?", [data.coins, data.email], callback);
 			}
 		],cb);
 	},

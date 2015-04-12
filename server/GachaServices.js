@@ -24,6 +24,20 @@ var GachaServices = Backbone.Model.extend({
 	drawGacha : function (email, type, cb) {
 		var _self = this;
 		async.auto({
+			user: function (next) {
+				Users.getUserByEmail({email:email}, next);
+			},
+			spendMoney: ['user', function (next, res) {
+				var user = res.user;
+				var consumption = (type == 0) ? 100 : ((type ==1)? 1000: 500);
+				var newMoney = user.coins - consumption;
+				console.log(newMoney);
+				if(newMoney<0){
+					cb(new Error("Do not enough money"));
+					return;
+				}
+				Users.spendMoney({coins: newMoney, email:email}, next);
+			}],
 			gachaProbability: function (next) {
 				GachaProbability.getItemsByType(type, next);
 			},
@@ -50,6 +64,7 @@ var GachaServices = Backbone.Model.extend({
 				Items.getItemsByIds(ids, next);
 			}],
 		}, function (err, res) {
+			console.log(JSON.stringify(res.itemsInfo));
 			var items = _self._getItemUserInfo(res.current, res.itemsInfo);
 			cb(null, items);
 		});
