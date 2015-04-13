@@ -57,7 +57,7 @@
                         <th>Rare</th>
                         <th>Quantity</th>
                     </tr>
-                  <tr ng-repeat="x in items">
+                  <tr ng-repeat="x in items | orderBy : 'i_id'">
                     <td>{{ x.i_id }}</td>
                     <td>{{ x.i_name }}</td>
                     <td>{{ x.rare }}</td>
