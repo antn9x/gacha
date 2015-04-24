@@ -1,0 +1,37 @@
+#create tier pact branch 
+Update SVN
+copy-notice (data from: mnt2/master/bb_master_tierpact1503_1.xls)::notice
+make copy-notice lang=en name=20150416_tierpact1504_1
+copy-gacha  (: gacha::group_banner_id)
+make copy-pact lang=en name=303911 
+copy-home-banner ( : gacha::group_banner_id)
+make copy-home-banner lang=en name=303911
+copy-card (make copy-card & gen-pic) (bb_master_tierpact1503_1.xls : card)
+ 	make copy-card card=1572
+	make copy-card card=11572
+	make gen-pic
+# update data 
+	svn up mnt2
+	cp mnt2/master/bb_master_tierpact1503_1.xls script/parameter/ && \
+	make merge-master target=out/bb_master_us_merged.xls target2=bb_master_tierpact1503_1.xls && \
+	echo yes | make update-db event=3039 python=1
+# deploy to server
+	make gdev-deploy-git serv=41 branch=feature/tier_pact1503_1
+# merge to test theme
+	git checkout develop && \
+	git checkout  feature/event_pvp39_mix && \
+	git merge   feature/event_pvp39	&& \
+	git merge   feature/tier_pact1503_1	&& \
+	git push &&\
+	make gdev-deploy-git serv=41 branch=feature/event_pvp40_mix && \
+	make gdev-app cmd=restart serv=41
+
+#tier & pvp
+i=40 && \
+t=1504_1 && \
+cp mnt2/master/bb_master_tierpact$t.xls script/parameter/ && \
+cp mnt2/master/bb_master_pvp$i.xls script/parameter/ && \
+cp mnt2/master/event/30$i.xls script/parameter/event/ && \
+make merge-master target=out/bb_master_us_merged.xls target2=bb_master_pvp$i.xls target3=bb_master_tierpact$t.xls && \
+make merge-master target=event/30$i.xls && \
+echo yes|make update-db event=30$i [python=1]

@@ -1,0 +1,25 @@
++ get log of blood.pvp_finish.log
+
+ ssh punch@vnhan-00094-mac.local
+ [ pass: punch ]
+cd ~/git/CS
+sh getlog.sh blood.pvp_finish.log 20150416 20150423
+
+f=blood.pvp_finish.log && \
+date=20150420 && \
+ssh mgsys@wu001 "rsync -rav wu0016:/data/mgsys/log/$f.$date* /tmp/wu0016 && gzip /tmp/wu0016/$f.$date*" && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.$date* data/
+
+#at local
+
+cd ~/Desktop/
+for((i=20150416; i<=20150423; i++)); do scp punch@vnhan-00094-mac.local:~/git/CS/data/blood.pvp_finish.log.$i* ~/Desktop/; done
+
+
+gzcat data/blood.pvp_finish.log.201504* | grep 3402954
+
+
+f=blood.err.log && \
+date=20150423 && \
+ssh mgsys@wu001 "rsync -rav wu0016:/data/mgsys/log/$f.$date* /tmp/wu0016 && gzip /tmp/wu0016/$f.$date*" && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.$date* data/

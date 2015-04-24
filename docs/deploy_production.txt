@@ -1,0 +1,32 @@
+
+ssh mgsys@wu0016
+ssh wu0016 "tail -f /data/mgsys/log/blood.err.log.20150416"
+
+ ssh mgsys@wu0001
+cd blood/BloodBrothers/
+
+dist-project --only-project-hosts	:
+	  :
+
+ngserver-restart-all 
+ngserver-reload-all 
+
+http://blood-a.denagames-asia.com/DownloadContent/common/cutscene/effects.js
+
+s3-log-downloader --get --name blood.pvp_finish.log --from 20150214 --to 20150221
+
+cd 
+sh getlog.sh blood.pvp_finish.log 20150316 20150317
+
+#query -> production server
+ssh mgsys@awdev0010       ->If error maybe need ssh to server for checking
+NODE_ENV=awdev0010_38 make migrate-db target=xxx
+ssh mu002
+|> mgsys@swdev0002[~]$ cd git/BloodBrothersServer38/
+
+git pull
+dist-project --only-project-hosts -x
+ngserver-reload-all 
+
+INSERT INTO trade_blacklist VALUES (1640782,  unix_timestamp('2020-12-31'), unix_timestamp()
+);

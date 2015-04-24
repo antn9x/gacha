@@ -1,0 +1,157 @@
+===== ranking + consumption
+
+PVP40
+
++ get time
+
+# select
+
+SELECT id,from_unixtime(started_at),from_unixtime(ended_at),from_unixtime(finished_at) 
+FROM event_data WHERE version IN (SELECT version FROM data_version) 
+AND id=3040;
+
+# result
+
+3040 2015-04-16 19:00:00	2015-04-23 17:00:00	2015-04-24 08:00:00
+
+# therefore dates are
+
+SET @date1='2015-04-16 19:00:00';
+SET @date2='2015-04-23 17:00:00';
+
+========================================================================
+
++ get log of item_use
+
+ ssh punch@vnhan-00094-mac.local
+ [ pass: punch ]
+cd ~/git/CS
+sh getlog.sh blood.item_use.log 20150416 20150423
+
+f=blood.item_use.log && \
+date=20150423 && \
+ssh mgsys@wu001 "rsync -rav wu0016:/data/mgsys/log/$f.$date* /tmp/wu0016 && gzip /tmp/wu0016/$f.$date*" && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.$date* data/
+
+#at local
+
+cd ~/Desktop/
+for((i=20150416; i<=20150423; i++)); do echo punch |  scp punch@vnhan-00094-mac.local:~/git/CS/data/blood.item_use.log.$i* ~/Desktop/; done
+
+========================================================================
+
++ import item_use to db local
+
+#schema
+
+CREATE TABLE `item_use` (
+  `log_date` datetime DEFAULT NULL,
+  `server_name` char(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `dummy_num` int(11) DEFAULT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `item_num` int(11) DEFAULT NULL,
+  `item_string` text COLLATE utf8_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+# truncate
+
+# import NO header, terminate by TAB (shift + command + i)
+
+
+========================================================================
+
+
++ select ranking and coin consumption, then import to local db
+# Query from prod
+# select (EDIT table name and time first)
+
+SET @date1='2015-04-16 19:00:00';
+SET @date2='2015-04-23 17:00:00';
+
+SELECT a.user_id,a.point,a.rank,ifnull(b.total_coin,0) AS total_coin FROM
+(SELECT user_id,`value` AS `point`,rank FROM event_ranking3040
+WHERE value>0
+ORDER BY rank) a
+LEFT JOIN
+(SELECT user_id,sum(price*quantity) AS total_coin FROM `bank_tran_status`
+WHERE g_bank_status=2 AND
+reg_date BETWEEN unix_timestamp(@date1) AND unix_timestamp(@date2)
+GROUP BY user_id) AS b
+ON a.user_id=b.user_id;
+
+# export csv
+
+# schema
+
+CREATE TABLE `ranking_coin` (
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `point` int(11) unsigned DEFAULT NULL,
+  `rank` int(11) unsigned DEFAULT NULL,
+  `total_coin` int(11) unsigned DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+# truncate
+
+# import IGNORE first row as header, terminate by ","
+
+
+========================================================================
+
+
++ match all data into 1 file .csv
+
+# query (edit dates first)
+
+SET @date1='2015-04-16 19:00:00';
+SET @date2='2015-04-23 17:00:00';
+
+SELECT a.*,
+IFNULL(gh,0) AS gh,
+IFNULL(bugle,0) AS bugle,
+IFNULL(gh_bloodbound,0) AS gh_bloodbound,
+IFNULL(mandrake,0) AS mandrake,
+IFNULL(leaf,0) AS leaf,
+IFNULL(mandrake_bloodbound,0) AS mandrake_bloodbound
+
+FROM ranking_coin a 
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) gh FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=11
+GROUP BY user_id) b ON a.user_id=b.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) bugle FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=10
+GROUP BY user_id) c ON a.user_id=c.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) gh_bloodbound FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=30
+GROUP BY user_id) d ON a.user_id=d.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) mandrake FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=1
+GROUP BY user_id) e ON a.user_id=e.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) leaf FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=31
+GROUP BY user_id) f ON a.user_id=f.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) mandrake_bloodbound FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=28
+GROUP BY user_id) g ON a.user_id=g.user_id;
+
+# export
+
+==================

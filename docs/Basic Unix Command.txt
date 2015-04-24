@@ -1,0 +1,42 @@
+Basic Unix Command
+# server
+xem user he thong
+cat /etc/passwd
+tao sua xoa group-user
+http://www.tutorialspoint.com/unix/unix-user-administration.htm
+useradd
+groupadd
+list user// group
+ls -la
+xem file - status
+vi filename       Edit a file using the vi editor. All UNIX systems will have vi in some form.
+list process (chiem nhieu % cpu // kill process // sort - zombie process // orphan process // process tree)
+http://www.tutorialspoint.com/unix/unix-processes.htm
+ps -u an.ta --- lists your processes
+$ ps aux | head -10
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0  51120  2796 ?        Ss   Dec22   0:09 /usr/lib/systemd/s
+ps -f --- full info of process
+kill PID --- kills (ends) the processes with the ID you gave
+tai nguyen he thong (free memory // o cung)
+quota -v --- show what your disk quota is
+IO stat
+# network
+IP : may card mang / cai gi connect vao cai gi (port nao open // giao thuc tren port la gi // in=out )
+Network connections, routing tables, interface statistics – netstat
+Getting network configuration – ifconfig
+
+
+# cront job
+create
+	
+run
+http://www.computerhope.com/unix/ucrontab.htm
+# fdisk -
+phan vung
+tao phan vung
+ext1 ext2 NTFS
+http://www.tutorialspoint.com/unix_commands/fdisk.htm
+#file
+Searche for and display all lines in file that contain PATTERN (case insensitive)
+fgrep -i PATTERN FILE

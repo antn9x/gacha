@@ -1,0 +1,254 @@
++ get trade logs to check hack
+ ssh punch@vnhan-00094-mac.local
+: pass: punch
+[12/16/14, 5:14:06 PM] PVN - Luu Cong To: CS folder: cd ~/git/CS
+ls -la data/ | grep trade_bid
+
+#blood.zone_start
+sh getlog.sh blood.zone_start.log 20150220 20150221
+gzcat data/blood.zone_start.log.201502* | grep 14036789
+
+# raidboss_meet  raidboss_support_accept  raidboss_battle_start
+sh getlog.sh blood.raidboss_meet.log 20141208 20141208
+sh getlog.sh blood.raidboss_support_accept.log 20141204 20141205
+sh getlog.sh blood.raidboss_battle_start.log 20141204 20141205
+
+gzcat data/blood.raidboss_battle_start.log.201412* | grep 2290901
+
+# blood.friend_request_apply
+sh getlog.sh blood.friend_request_apply.log 20141221 20141228
+gzcat data/blood.friend_request_apply.log.201412* | grep 2290901
+
+# friend_gift
+sh getlog.sh blood.friend_gift.log 20141201 20141219
+gzcat data/blood.friend_gift.log.201412* | grep 6473511
+
+# blood.item_use
+sh getlog.sh blood.item_use.log 20150214 20150216
+f=blood.item_use.log && \
+rsync -ravP mgsys@wu0016:/data/mgsys/log/$f.2015031* /tmp/wu0016/
+f=blood.item_use.log && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.2015031* data/
+cd ~/Desktop/
+for((i=20150316; i<=20150317; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.item_use.log.$i* ./; done
+
+gzcat data/blood.item_use.log.201412* | grep 2875755
+
+# blood.trade_put (registered on bazar)
+sh getlog.sh blood.trade_put.log 20150101 20150120
+gzcat data/blood.trade_put.log.201501* | grep 5488052
+
+# finish battle log
+sh getlog.sh blood.pvp_finish.log 20150316 20150323
+f=blood.pvp_finish.log && \
+rsync -ravP mgsys@wu0016:/data/mgsys/log/$f.201503* /tmp/wu0016/
+for((i=20150316; i<=20150323; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.pvp_finish.log.$i* ./; done
+f=blood.pvp_finish.log && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.201503* data/
+cd ~/Desktop/ && \
+for((i=20150316; i<=20150323; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.pvp_finish.log.$i* ./; done
+
+gzcat data/blood.pvp_finish.log.201503* | grep 11815938
+
+#event user
+SELECT * from event_user where user_id IN (16165238, 16397946, 5921010);
+# user info
+SELECT * from user where id IN (16165238, 16397946, 5921010);
+#consumption
+SELECT user_id,sum(price*quantity) AS total_coin FROM `bank_tran_status`
+WHERE g_bank_status=2 AND
+user_id IN (16165238, 16397946, 5921010
+) 
+GROUP BY user_id;
+
+SET @date1='2014-12-16 17:00:00';
+SET @date2='2014-12-23 15:00:00';
+AND
+reg_date BETWEEN unix_timestamp(@date1) AND unix_timestamp(@date2)
+
+#event data
+SET @date1='2015-01-1 00:00:00';
+SET @date2='2015-01-31 23:59:59';
+Select * from event_data 
+where started_at>=unix_timestamp(@date1) 
+AND ended_at<=unix_timestamp(@date2)
+AND version=(select * from data_version);
+
+# event ranking 
+select * from event_user
+where event_id in (1033,
+2031,
+3037,
+5006)
+and user_id in (1298476, 6670199,
+15194792);
+
+# dismiss logs
+select * from card_sell_log where user_id=9356100 and created_at > UNIX_TIMESTAMP('2014-07-18') and created_at < UNIX_TIMESTAMP('2014-07-20');
+
+select * from card where version=(select version from data_version) and
+id in (11318,10484,1302,1094,10168,169,22,10022,511);
+
+# get evolution logs
+sh getlog.sh blood.card_evolve.log 2015-01-02 2015-01-09
+
+mkdir 726
+gzcat data/blood.card_evolve.log.2015* | grep 7545941 > 726/7545941.data_evol && \
+cat 726/7545941.data_evol
+
+# get trade logs
+s3-log-downloader --get --name blood.trade_bid.log --from 20141001 --to 20141005
+__wu0001
+s3-blood-log-downloader --get --name blood.trade_bid.log --from 20140901 --to 20140930
+mv /tmp/mu002/blood.trade_bid.log.201409* /tmp/wu0016/
+__mac94-git/CS/
+f=blood.trade_bid.log && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.201409* data/
+
+sh getlog.sh blood.trade_bid.log 20150224 20150228
+
+d=762 && \
+i=12132791 && \
+t=201411 && \
+mkdir -p $d && \
+cat data/blood.trade_bid.log.$t* | grep $i  > $d/$i.data && \
+node extract_trade_bid.js $d/$i.data > $d/$i.trade_data && \
+cat $d/$i.trade_data
+
+gzcat data/blood.trade_bid.log.201412* | grep 16397946  > 736/16397946.data && \
+node extract_trade_bid.js 736/16397946.data > 736/16397946.trade_data && \
+cat 736/16397946.trade_data
+
+cat data/blood.trade_bid.log.201401* | grep 8025544  > 704/8025544.data
+node extract_trade_bid.js 704/8025544.data > 704/8025544.trade_data
+cat 704/8025544.trade_data
+
+# got log ip
+sh getlog.sh blood.login_ip.log 20150201 20150221
+s3-log-downloader --get --name blood.login_ip.log --date 20141220
+rsync -ravP mgsys@wu001:/tmp/wu0016/blood.login_ip.log.20141201* data/
+
+d=74 && \
+mkdir -p $d && \
+i=972776 && \
+t=201502 && \
+cat data/blood.login_ip.log.$t* | grep $i > $d/login_$i.data_login && \
+cat $d/login_$i.data_login
+***+==>> 
+gzcat data/blood.login_ip.log.201411* | grep 12132791
+ 
+
+#manual - on mac94-git/CS/
+
+f=blood.trade_bid.log && \
+date=201410 && \
+ssh mgsys@wu001 "rsync -rav wu0016:/data/mgsys/log/$f.$date* /tmp/wu0016 && gzip $f.$date*" && \
+rsync -ravP mgsys@wu001:/tmp/wu0016/$f.$date* data/
+
+ssh mgsys@wu001 "rm /tmp/wu0016/$1.$date*"
+
+# at wu0016
+ssh mgsys@wu0001
+ scp wu0016:/data/mgsys/log/blood.trade_bid.log.20150117 /tmp/
+# at local
+for((i=20150214; i<=20150221; i++)); do scp 
+ scp mgsys@wu0001:/tmp/wu0016/blood.pvp_finish.log.$i* ./; done
++ get log of blood.present_add
+
+#at mu001
+
+for((i=20141216; i<=20141221; i++)); do echo yes | /home/mgsys/MgServer/script/batch/get_log_from_s3.pl --host mu002 --date $i --name blood.present_add.log;done
+for((i=20150218; i<=20150221; i++)); do scp wu0016:/data/mgsys/log/blood.pvp_finish.log.$i* /tmp/wu0016/; done
+
+#at local
+
+cd ~/Desktop/
+for((i=20150116; i<=20150118; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.item_use.log.$i* ./; done
+
+for((i=20150116; i<=20150118; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.pvp_finish.log.$i* ./; done
+
+for((i=20150214; i<=20150216; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.item_use.log.$i* ./; done
+
+for((i= 20150214; i<= 20150216; i++)); do scp punch@vnhan-00094-mac.local:git/CS/data/blood.pvp_finish.log.$i* ./; done
+=========
+CREATE TABLE `item_use` (
+  `log_date` datetime DEFAULT NULL,
+  `server_name` char(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `log_code` int(11) DEFAULT NULL,
+  `item_id` int(11) DEFAULT NULL,
+  `item_num` int(11) DEFAULT NULL,
+  `item_string` text COLLATE utf8_unicode_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `pvp_finish` (
+  `log_date` datetime DEFAULT NULL,
+  `server_name` char(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `log_code` int(11) DEFAULT NULL,
+  `last_zone` int(11) DEFAULT NULL,
+  `level` int(11) DEFAULT NULL,
+  `opponent_id` int(11) DEFAULT NULL,
+  `opponent_level` int(11) DEFAULT NULL,
+  `cache_type` int(11) DEFAULT NULL,
+  `did_win` int(11) DEFAULT NULL,
+  `consecutive_win` int(11) DEFAULT NULL,
+  `total_win` int(11) DEFAULT NULL,
+  `damage` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+++++
+SET @date1='2015-03-16 19:00:00';
+SET @date2='2015-03-17 17:00:00';
+
+SELECT a.*,
+IFNULL(gh,0) AS gh,
+IFNULL(bugle,0) AS bugle,
+IFNULL(gh_bloodbound,0) AS gh_bloodbound,
+IFNULL(mandrake,0) AS mandrake,
+IFNULL(leaf,0) AS leaf,
+IFNULL(mandrake_bloodbound,0) AS mandrake_bloodbound,
+IFNULL(battle_count,0) AS battle_count
+
+FROM ranking_coin a 
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) gh FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=11
+GROUP BY user_id) b ON a.user_id=b.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) bugle FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=10
+GROUP BY user_id) c ON a.user_id=c.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) gh_bloodbound FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=30
+GROUP BY user_id) d ON a.user_id=d.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) mandrake FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=1
+GROUP BY user_id) e ON a.user_id=e.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) leaf FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=31
+GROUP BY user_id) f ON a.user_id=f.user_id
+
+LEFT JOIN
+(SELECT user_id,sum(item_num) mandrake_bloodbound FROM item_use 
+WHERE log_date BETWEEN @date1 AND @date2
+AND item_id=28
+GROUP BY user_id) g ON a.user_id=g.user_id
+
+LEFT JOIN
+(SELECT user_id,count(*) AS battle_count FROM pvp_finish 
+WHERE log_date BETWEEN @date1 AND @date2
+GROUP BY user_id) bc ON a.user_id=bc.user_id;

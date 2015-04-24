@@ -1,0 +1,37 @@
+#Steps to prepare PVP event
++prepare client:
+update client (version ? - a Minh -> checkout client)
+//cd bb client
+ make toggle-us : update client
+(make jake-and-deploy serv=38)- up client to sv test
+->make pack-json (join spriter and ui to one file)
+->NGCORE_SDK_PATH=~/lib/ngcore/2.0.1.2/SDK/ make jake-and-deploy serv=38
++prepare server:
+	
+truncate table event_pvp_group; (may be dump before)
+truncate table event_pvp_group_user;
++ make new-event id=3040 (copy data from old event)
++ make eventopening id=3040 (copy image event opening for hi&low perform devices)
++update ranking reward: 
+i=40 && \
+make event-reward id=30$i lang=en file=mnt/11_仕様書/10_Event/3_PVP/EventPVP$i/10_WWランキングボーナス設定PVP$i.xls
++update event page: edit xxxx.ejs (cacoo.dena.jp)
+\\54.254.239.194\spapp-all\10_game\17_soul\26_Design\delivery\event details\event pvp\assets\Event PVP39\i
+cd mnt/26_Design/delivery/event\ details/event\ pvp/assets/Event\ PVP39/i/
++copy notice: 
+ 	make copy-notice lang=en name=20150418_eventupdated
++copy event_30xx.json: )copy from remote server to local
+        make copy-text event=3040 lang=en
+	make sync-text (if update system.json -> commit manifest)
++copy card images: (id follow file data: )
+	make copy-card card=? 
+	make gen-pic: copy image (create link file) 
++migrate (add all table): make migrate-db target=all
++copy loginbonus title from old (file ejs+ make folder with images)
+
+#prepare dev evn
+ngCore/bin/ngServer script --name=batch/update_pvp_title --timeOffset=368512s
+ngCore/bin/ngServer script --name=batch/update_pvp_group --timeOffset=368512s
+trong update_pvp_group.js va update_pvp_title.js, fix environment
+var titleId = process.argv[5];
+http://blood.jenkins.dev.denagames-asia.com/view/cron/job/BB_Cron_Event_PVP_Batch_WW

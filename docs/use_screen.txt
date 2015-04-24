@@ -1,0 +1,49 @@
+#use screen
+ssh mgsys@mu001  
+screen -S delete_snow_flake_coin  (create screen then can use screen -ls) df -h : usage
+ > >> run script
+control +a -> d : dttach screen
+>>>re attach
+screen -r 26045.pts-29.mu001
+
+#memcached use
+http://www.pal-blog.de/entwicklung/perl/memcached-statistics-stats-command.html
+[mgsys@mu001 ~]$ echo "stats" | nc mw010 11211  --> view memcached
+
+STAT pid 21287
+STAT uptime 65497749
+STAT time 1420025988
+STAT version 1.4.4
+STAT pointer_size 64
+STAT rusage_user 723661.155782
+STAT rusage_system 611364.129525
+STAT curr_connections 112   --> giua cac server phai tuong duong nhau
+STAT total_connections 253344700 --> lich su nhung lan truy cap
+STAT connection_structures 542 
+STAT cmd_get 26108088422
+STAT cmd_set 6678894718
+STAT cmd_flush 1
+STAT get_hits 19320901207 > truy cap thanh cong
+STAT get_misses 6787187215 > truy cap that bai
+STAT delete_misses 14401921
+STAT delete_hits 114197769
+STAT incr_misses 0
+STAT incr_hits 0
+STAT decr_misses 0
+STAT decr_hits 0
+STAT cas_misses 0
+STAT cas_hits 0
+STAT cas_badval 0
+STAT auth_cmds 0
+STAT auth_errors 0
+STAT bytes_read 29492312198038
+STAT bytes_written 27016656028265
+STAT limit_maxbytes 2621440000 --> dung luong toi da
+STAT accepting_conns 1
+STAT listen_disabled_num 0
+STAT threads 4 ->> phai bang nhau
+STAT conn_yields 402
+STAT bytes 1641566079
+STAT curr_items 4923041
+STAT total_items 2383927422
+STAT evictions 301170750  > so luong byte ko truy cap duoc
